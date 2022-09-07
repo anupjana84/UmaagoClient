@@ -4,10 +4,13 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import MainStack from './App/Stacks/MainStack';
 import { Provider } from 'react-redux';
 import store from './App/Store/store';
+import FlashMessage from "react-native-flash-message";
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 
@@ -41,6 +44,7 @@ const App = () => {
         <Provider store={store}>
           <PaperProvider>
             <MainStack />
+            <FlashMessage />
           </PaperProvider>
 
         </Provider>

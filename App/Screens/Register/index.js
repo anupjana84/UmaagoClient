@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+
 import {
   ScrollView,
-  Platform,
+ 
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -11,71 +11,77 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Feather from 'react-native-vector-icons/Feather';
-import { Picker } from '@react-native-picker/picker';
+
 import { RadioButton } from 'react-native-paper';
 import { TextInput, HelperText, Card } from 'react-native-paper';
 import CameraModal from '../../Components/CameraModal';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { Base_url } from '../../Utils/BaseUrl';
 import { alertMessage } from '../../Components/AlertMessage';
-import FlashMessage from "react-native-flash-message";
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Loder from '../../Components/Loder';
-import { useDispatch } from 'react-redux';
+
+import StateModal from '../../Components/StateModal';
+import DistrictModal from '../../Components/DistrictModal';
+import CityModal from '../../Components/CityModal';
 // import { USER_SET } from '../../Actions/ActionType/User';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Register = ({ navigation }) => {
-  const dispatch =useDispatch()
+  
+ 
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [phone, setPhone] = useState('');
   const [aadhar, setAadhar] = useState('');
-  
-
+  const [truckNo, setTruckNo] = useState('');
   const [pan_no, setPan] = useState('');
   const [gst_no, setGst_no] = useState('');
-  const [areaName, setAreaName] = useState('');
 
-  const [password, setPassword] = React.useState('');
- 
-  const [show, setShow] = React.useState(true);
- 
-  const [lodding, setLodding] = React.useState(false);
-  const [show1, setShow1] = React.useState(true);
+  const [division, setDivision] = useState('');
+  const [subDivision, setSubDivision] = useState('');
+  const [areaName, setAreaName] = useState('');
+  const [modalVisible, setModalVisible] = useState('');
+  const [password, setPassword] = useState('');
+  const [cPassword, setCPassword] = useState('');
+  const [show, setShow] = useState(true);
+  const [show1, setShow1] = useState(true);
+  const [lodding, setLodding] =useState(false);
+  ///===
+  const [selectedCityName, setSelectedCityName] = useState('');
+  const [selectedStateName, setSelectedStateName] = useState('');
+  const [selectedDistName, setSelectedDistName] = useState('');
+  const [stateMVisible, setstateMVisible] = useState(false);
+  const [distDMVisible, setDMVisible] = useState(false);
+  const [cityMVisible, setCityVisible] = useState(false);
+  ///===
+
 
   const [selectedState, setSelectedState] = useState();
   const [selectedDistrict, setSelectedDistrict] = useState();
   const [selectedCity, setSelectedCity] = useState();
-  const [cPassword, setCPassword] = React.useState('');
-
+  const [truckType, setTruckType] = React.useState('1');
+  const [image, setImage] = useState(null);
   const [errMessagefn, seterrorMessagefn] = useState('')
   const [errMessageln, seterrorMessageln] = useState('')
   const [errMessagead, seterrorMessagead] = useState('')
   const [errMessageph, seterrorMessageph] = useState('')
- 
-  const [errMessagePa, seterrorMessagePa] = useState('')
   const [errMessagePass, seterrorMessagePass] = useState('')
-
+  const [errMessagePa, seterrorMessagePa] = useState('')
   const [getState, setGetState] = useState([])
   const [city, setCity] = useState([])
 
   const [district, setDistrict] = useState([])
-  const options = {
-    title: ' Choose Image ',
-    takePhotoButtonTitle: 'From camera',
-    ChooseFromLibraryButtonTitle: 'From Library',
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
-  };
  
 
+
+  
   const getdistAndTruck = () => {
     fetch(`${Base_url}/register`,
       {
@@ -90,7 +96,7 @@ const Register = ({ navigation }) => {
         return res.json()
       }).then(result => {
         setGetState(result.states)
-        
+
         // console.log(result.states, 'RE')
         // console.log(result, 'RE')
       })
@@ -99,7 +105,10 @@ const Register = ({ navigation }) => {
 
   //=========
   const getDistrict = (id) => {
-    // console.log(id);
+    setSelectedCityName('')
+    setSelectedDistName('')
+    setSelectedDistrict('')
+    setSelectedCity('')
     fetch(`${Base_url}/get-distric/${id}`,
       {
         method: 'GET',
@@ -112,7 +121,6 @@ const Register = ({ navigation }) => {
       .then(res => {
         return res.json()
       }).then(result => {
-       
         setDistrict(result.districs)
         // console.log(result, 'RE')
       })
@@ -122,6 +130,8 @@ const Register = ({ navigation }) => {
   //=========
   const changeCity = (id) => {
     // console.log(id);
+    setSelectedCityName('')
+    setSelectedCity('')
     fetch(`${Base_url}/get-city/${id}`,
       {
         method: 'GET',
@@ -135,7 +145,7 @@ const Register = ({ navigation }) => {
         return res.json()
       }).then(result => {
         setCity(result.cities)
-        console.log(result, 'RE')
+        // console.log(result, 'RE')
       })
       .catch(err => console.log(err))
 
@@ -172,22 +182,22 @@ const Register = ({ navigation }) => {
     }
   }
   //======== CHECK MATCH
-  const checkPassword=(pass)=>{
-if (password !== pass) {
-  seterrorMessagePass('Password does not match')
-}else{
-  setCPassword(pass)
-  seterrorMessagePass('')
-}
+  const checkPassword = (pass) => {
+    if (password !== pass) {
+      seterrorMessagePass('Password does not match')
+    } else {
+      setCPassword(pass)
+      seterrorMessagePass('')
+    }
   }
   //========
-  const checkPasswordlength=(pass)=>{
-if (pass.length<6) {
-  seterrorMessagePa('Password must be greater than 6 char.')
-}else{
-  setPassword(pass)
-  seterrorMessagePa('')
-}
+  const checkPasswordlength = (pass) => {
+    if (pass.length < 6) {
+      seterrorMessagePa('Password must be greater than 6 char.')
+    } else {
+      setPassword(pass)
+      seterrorMessagePa('')
+    }
   }
   //========
   const checkad = (pin) => {
@@ -199,36 +209,36 @@ if (pass.length<6) {
     }
   }
   //========
-  const register =  async () => {
-    // console.log( fName ,
-    // phone ,
-    // password,
-    // cPassword ,
-    // aadhar ,
-    // truckNo ,
-    // selectedState ,'state',
-    // selectedDistrict ,
-    // selectedCity ,
-    // truckType ,
-    // division ,
-    // subDivision ,
-    // areaName ,);
+  const register = async () => {
+    console.log(
+       fName ,
+       lName,
+    phone ,
+    password,
+    cPassword ,
+    aadhar ,
+    pan_no ,
+    gst_no,
+    selectedState ,
+    selectedDistrict ,
+    selectedCity ,
+    areaName ,);
 
     if (
-      fName == ''||
+      fName == '' ||
       lName == '' ||
       phone == '' ||
       password == '' ||
-      gst_no=='' ||
-      pan_no==''||
-      cPassword==''||
+      gst_no == '' ||
+      pan_no == '' ||
+      cPassword == '' ||
       aadhar == '' ||
-    
+
       selectedState == '' ||
       selectedDistrict == '' ||
       selectedCity == '' ||
-     
-      areaName == '' 
+
+      areaName == ''
 
     ) {
       alertMessage('All Field are Required', '#800000')
@@ -239,58 +249,45 @@ if (pass.length<6) {
       alertMessage('Aadhaar No. must be 16 digits', '#E07C24')
     } else {
       setLodding(true)
- 
-   const dataOne={
-    first_name:fName,
-    last_name:lName,
-    phone_no:phone,
-    aadhar_no:aadhar,
-    pan_no:pan_no,
-    gst_no:gst_no,
-    password_confirmation:cPassword,
 
-    password:password,
-    aadhar_no:aadhar,
-    state_id:selectedState,
-    distric_id:selectedDistrict,
-    city_id:selectedCity,
-    area_name_type:areaName,
+      const dataOne = {
+        first_name: fName,
+        last_name: lName,
+        phone_no: phone,
+        aadhar_no: aadhar,
+        pan_no: pan_no,
+        gst_no: gst_no,
+        password_confirmation: cPassword,
 
-   }
-    
-      // formData.append('first_name', fName);
-      // formData.append('last_name', lName);
-      // formData.append('phone_no', phone);
-      // formData.append('password', password);
-  
-    
-      // formData.append('aadhar_no', aadhar);
-      // formData.append('state_id', selectedState);
-      // formData.append('distric_id', selectedDistrict);
-      // formData.append('city_id', selectedCity);
-      // formData.append('area_name_type', areaName);
-     
-      // console.log(formData, 'formData');
-      return await  fetch(`${Base_url}/register-client`, {
+        password: password,
+        aadhar_no: aadhar,
+        state_id: selectedState,
+        distric_id: selectedDistrict,
+        city_id: selectedCity,
+        area_name_type: areaName,
+
+      }
+
+
+      return await fetch(`${Base_url}/register-client`, {
         method: 'POST',
         body: JSON.stringify(dataOne),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
-          // Accept: 'applicatopn/json',
-          // 'content-type': 'multipart/form-data',
-         
+
+
 
         },
       }).then(res => {
-        // console.log(res,'red');
+
         return res.json()
-      }).then( async (result) => {
-        // console.log(result);
-        if (result?.error==true) {
+      }).then(async (result) => {
+
+        if (result?.error == true) {
           setLodding(false)
           alertMessage(result.error_messages[0], '#E07C24')
-        }else{
+        } else {
           setFName('')
           setLName('')
           setPhone('')
@@ -299,31 +296,24 @@ if (pass.length<6) {
           setAadhar('')
           setGst_no('')
           setPan('')
-    
+
           setSelectedState('')
           setSelectedDistrict('')
           setSelectedCity('')
-          
-          
+
+
           setAreaName('')
-          
-         
-        // await AsyncStorage.setItem('@user',JSON.stringify(result))
-        // dispatch({
-        //   type:USER_SET,
-        //   payload:{
-        //     data:result
-        //   }
-        // })
-        alertMessage('Register Successfull', '#E07C24')
-        setLodding(false)
-        setTimeout(() => {
-          navigation.navigate('Login')
-        }, 1000);
-       
-        // console.log(result, 'rd')
-      }
-        
+
+
+          alertMessage('Register Successfull', '#E07C24')
+          setLodding(false)
+          setTimeout(() => {
+            navigation.navigate('Login')
+          }, 1000);
+
+
+        }
+
       }).catch(err => console.log(err));
     }
   }
@@ -334,262 +324,272 @@ if (pass.length<6) {
   }, [])
   return (
     <>
-    <SafeAreaView style={styles.container}>
-      <StatusBar
-        animated={true}
-        backgroundColor="#ff3259"
-        barStyle="default"
-        hidden={false}
-      />
-      {/* =======Header=========== */}
-      <View style={styles.headerview}>
-        <View style={styles.headerLeft}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <AntDesign name="left" size={16} color="white" />
-          </TouchableOpacity>
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          animated={true}
+          backgroundColor="#ff3259"
+          barStyle="default"
+          hidden={false}
+        />
+        {/* =======Header=========== */}
+        <View style={styles.headerview}>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <AntDesign name="left" size={16} color="white" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.headerMiddle}>
+            <Text style={{ color: 'white', fontSize: 16 }}>Register</Text>
+
+          </View>
+          <View style={styles.headerLeft} />
         </View>
-        <View style={styles.headerMiddle}>
-          <Text style={{ color: 'white', fontSize: 16 }}>Register</Text>
-        </View>
-        <View style={styles.headerLeft} />
-      </View>
-      <ScrollView nestedScrollEnabled={true}
-       keyboardShouldPersistTaps="handled"
-      >
-        <Card
-          style={{
-            padding: 20,
-            margin: 20,
-            backgroundColor: 'white',
-            borderRadius: 20,
-          }}>
-          <TextInput
-            style={styles.inputStyle}
-            label="First Name"
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => checkname(text)}
-          />
-          {errMessagefn ? (<HelperText type="error" >
-            {errMessagefn}
-          </HelperText>) : (null)}
-          <TextInput
-            style={styles.inputStyle}
-            label="Last Name"
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => checkln(text)}
-          />
-          {errMessageln ? (<HelperText type="error" >
-            {errMessageln}
-          </HelperText>) : (null)}
-          <TextInput
-            style={styles.inputStyle}
-            label="Phone Number"
-            maxLength={10}
-            keyboardType="numeric"
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => checkph(text)}
-          />
-          {errMessageph ? (<HelperText type="error" >
-            {errMessageph}
-          </HelperText>) : (null)}
-          <TextInput
-            style={styles.inputStyle}
-            label="Aadhaar Number"
-            keyboardType="numeric"
-            maxLength={16}
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => checkad(text)}
-          />
-          {errMessagead ? (<HelperText type="error" >
-            {errMessagead}
-          </HelperText>) : (null)}
-          <TextInput
-            activeUnderlineColor="#ff3259"
-            style={[styles.inputStyle]}
-            label="Enter Password"
-          
-            secureTextEntry={show}
-            onChangeText={text => checkPasswordlength(text)}
-            right={
-              <TextInput.Icon
-                onPress={() => setShow(!show)}
-                name={() => <Ionicons name={!show ? "md-eye-outline" : 'md-eye-off-outline'} size={20} color="black" />}
-              />
-            }
-          />
-           {errMessagePa ? (<HelperText type="error" >
-            {errMessagePa}
-          </HelperText>) : (null)}
-          <TextInput
-            activeUnderlineColor="#ff3259"
-            style={[styles.inputStyle]}
-            label="Confirm Password"
+        <ScrollView nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Card
+            style={{
+              padding: 20,
+              margin: 20,
+              backgroundColor: 'white',
+              borderRadius: 20,
+            }}>
+            <TextInput
+              style={{ ...styles.inputStyle }}
+              label="First Name"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              placeholderTextColor="#000"
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => checkname(text)}
+            />
+            {errMessagefn ? (<HelperText type="error" >
+              {errMessagefn}
+            </HelperText>) : (null)}
+            <TextInput
+              style={styles.inputStyle}
+              label="Last Name"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => checkln(text)}
+            />
+            {errMessageln ? (<HelperText type="error" >
+              {errMessageln}
+            </HelperText>) : (null)}
+            <TextInput
+              style={styles.inputStyle}
+              label="Phone Number"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              maxLength={10}
+              keyboardType="numeric"
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => checkph(text)}
+            />
+            {errMessageph ? (<HelperText type="error" >
+              {errMessageph}
+            </HelperText>) : (null)}
+
+            <TextInput
+              activeUnderlineColor="#ff3259"
+              style={[styles.inputStyle]}
+              label="Enter Password"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+
+              secureTextEntry={show}
+              onChangeText={text => checkPasswordlength(text)}
+              right={
+                <TextInput.Icon
+                  onPress={() => setShow(!show)}
+                  name={() => <Ionicons name={!show ? "md-eye-outline" : 'md-eye-off-outline'} size={20} color="black" />}
+                />
+              }
+            />
+            {errMessagePa ? (<HelperText type="error" >
+              {errMessagePa}
+            </HelperText>) : (null)}
+            <TextInput
+              activeUnderlineColor="#ff3259"
+              style={[styles.inputStyle]}
+              label="Confirm Password"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              secureTextEntry={show1}
+              onChangeText={text => checkPassword(text)}
+              right={
+                <TextInput.Icon
+                  onPress={() => setShow1(!show1)}
+                  name={() => <Ionicons name={!show1 ? "md-eye-outline" : 'md-eye-off-outline'} size={20} color="black" />}
+                />
+              }
+            />
+            {errMessagePass ? (<HelperText type="error" >
+              {errMessagePass}
+            </HelperText>) : (null)}
+
+            <TextInput
+              style={styles.inputStyle}
+              label="Aadhaar Number"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              keyboardType="numeric"
+              maxLength={16}
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => checkad(text)}
+            />
+            {errMessagead ? (<HelperText type="error" >
+              {errMessagead}
+            </HelperText>) : (null)}
+            <TextInput
+              style={styles.inputStyle}
+              label="Pan No"
+              value={pan_no}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => setPan(text)}
+            />
+            <TextInput
+              style={styles.inputStyle}
+              label="GST No"
+              value={gst_no}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => setGst_no(text)}
+            />
+            {/* ==========state=========== */}
+            <TouchableOpacity
+              onPress={() => setstateMVisible(true)} style={styles.drView}>
+              <View style={styles.drUpper}>
+                <Text style={{ fontSize: 20 }}>State</Text>
+              </View>
+              <View style={styles.drLower}>
+                <Text>{selectedStateName}</Text>
+                <Entypo
+                  name="chevron-down"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+              </View>
+            </TouchableOpacity>
+            {/* ==========state=========== */}
+            {/* ==========District=========== */}
+            <TouchableOpacity
+              onPress={() => setDMVisible(true)} style={styles.drView}>
+              <View style={styles.drUpper}>
+                <Text style={{ fontSize: 20 }}>District</Text>
+              </View>
+              <View style={styles.drLower}>
+                <Text>{selectedDistName}</Text>
+                <Entypo
+                  name="chevron-down"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+              </View>
+            </TouchableOpacity>
+             {/* ============ city========= */}
+            <TouchableOpacity
+              onPress={() => setCityVisible(true)} style={styles.drView}>
+              <View style={styles.drUpper}>
+                <Text style={{ fontSize: 20 }}>City</Text>
+              </View>
+              <View style={styles.drLower}>
+                <Text>{selectedCityName}</Text>
+                <Entypo
+                  name="chevron-down"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+              </View>
+            </TouchableOpacity>
             
-            secureTextEntry={show1}
-            onChangeText={text => checkPassword(text)}
-            right={
-              <TextInput.Icon
-                onPress={() => setShow1(!show1)}
-                name={() => <Ionicons name={!show1 ? "md-eye-outline" : 'md-eye-off-outline'} size={20} color="black" />}
-              />
-            }
-          />
-           {errMessagePass ? (<HelperText type="error" >
-            {errMessagePass}
-          </HelperText>) : (null)}
-          
-          <TextInput
-            style={styles.inputStyle}
-            label="Pan No"
-            value={pan_no}
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => setPan(text)}
-          />
-          <TextInput
-            style={styles.inputStyle}
-            label="GST No"
-            value={gst_no}
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => setGst_no(text)}
-          />
-          
-         
-          {/* ==========state=========== */}
-          <View style={styles.dropDownView}>
-            <View style={styles.dropDownViewLeft}>
-              <Text style={styles.inputStyle1}>State</Text>
-            </View>
-            <View style={styles.dropDownViewRight}>
-              <View style={styles.pickerBoxInner}>
-                <Picker
-                  dropdownIconRippleColor={'#FFFFFF'}
-                  dropdownIconColor={'#ffffff'}
-                  selectedValue={selectedState}
-                  style={styles.pickerStyle}
-                  placeholder="Select your SIM"
-                  onValueChange={(itemValue, itemIndex) => {
-                    setSelectedState(itemValue)
-                    getDistrict(itemValue)
-                  }
-                  }>
-                  {getState.map((item, i) => {
-                    return (
-                      <Picker.Item key={i} label={item.name} value={item.id} />
-                    )
-                  })}
-                </Picker>
-              </View>
-              <Entypo
-                name="chevron-down"
-                size={24}
-                color="black"
-                style={{ marginTop: '-10%', marginLeft: 315 }}
-              />
-            </View>
-          </View>
-          {/* ==========state=========== */}
-          {/* ==========District=========== */}
-          <View style={styles.dropDownView}>
-            <View style={styles.dropDownViewLeft}>
-              <Text style={styles.inputStyle1}>District</Text>
-            </View>
-            <View style={styles.dropDownViewRight}>
-              <View style={styles.pickerBoxInner}>
-                <Picker
-                  dropdownIconRippleColor={'#FFFFFF'}
-                  dropdownIconColor={'#ffffff'}
-                  selectedValue={selectedDistrict}
-                  style={styles.pickerStyle}
-                  placeholder="Select your SIM"
-                  onValueChange={(itemValue, itemIndex) => {
-                    changeCity(itemValue)
-                    setSelectedDistrict(itemValue)
-                  }
-                  }>
-                  {district.map((item, i) => {
-                    return (
-                      <Picker.Item key={i} label={item.name} value={item.id} />
-                    )
-                  })}
-                </Picker>
-              </View>
-              <Entypo
-                name="chevron-down"
-                size={24}
-                color="black"
-                style={{ marginTop: '-10%', marginLeft: 315 }}
-              />
-            </View>
-          </View>
-          {/* ========== District =========== */}
-          {/* ============ city========= */}
-          <View style={styles.dropDownView}>
-            <View style={styles.dropDownViewLeft}>
-              <Text style={styles.inputStyle1}>City</Text>
-            </View>
-            <View style={styles.dropDownViewRight}>
-              <View style={styles.pickerBoxInner}>
-                <Picker
-                  dropdownIconRippleColor={'#FFFFFF'}
-                  dropdownIconColor={'#ffffff'}
-                  selectedValue={selectedCity}
-                  style={styles.pickerStyle}
-                  placeholder="Select your SIM"
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSelectedCity(itemValue)
-                  }>
-                  {city.map((item, i) => {
-                    return (
+           
+            
+            {/* ==========City=========== */}
+            {/* ==========Division=========== */}
 
-                      <Picker.Item key={i} label={item.name} value={item.id} />
-                    )
-                  })}
+            {/* ==========Division=========== */}
 
-                </Picker>
-              </View>
-              <Entypo
-                name="chevron-down"
-                size={24}
-                color="black"
-                style={{ marginTop: '-10%', marginLeft: 315 }}
-              />
-            </View>
-          </View>
-          {/* ==========City=========== */}
-          {/* ==========Division=========== */}
+            <TextInput
+              style={styles.inputStyle}
+              label="Division"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              value={division}
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => setDivision(text)}
+            />
+            <TextInput
+              style={styles.inputStyle}
+              label="Subdivision"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              value={subDivision}
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => setSubDivision(text)}
+            />
+            <TextInput
+              style={styles.inputStyle}
+              label="Area Name"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
+              value={areaName}
+              activeUnderlineColor="#ff3259"
+              onChangeText={text => setAreaName(text)}
+            />
+            
+          </Card>
+          <TouchableOpacity
+            onPress={() => register()}
+            style={styles.nextBottom}>
+            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
+              Save
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
 
-          {/* ==========Division=========== */}
-
-         
-          <TextInput
-            style={styles.inputStyle}
-            label="Area Name"
-            value={areaName}
-            activeUnderlineColor="#ff3259"
-            onChangeText={text => setAreaName(text)}
-          />
-          
-          
-        </Card>
-        <TouchableOpacity
-          onPress={() => register()}
-          style={styles.nextBottom}>
-          <Text style={{ color: '#ff3259', fontSize: 20, fontWeight: 'bold' }}>
-            Next
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-
-      {/* =======Header=========== */}
+        {/* =======Header=========== */}
       
-      <FlashMessage />
-    </SafeAreaView>
-   {lodding && <Loder lodding={lodding}/>}  
+        <StateModal
+          getDistrict={getDistrict}
+          setSelectedState={setSelectedState}
+          setSelectedStateName={setSelectedStateName}
+          stateMVisible={stateMVisible}
+          setstateMVisible={setstateMVisible}
+          getState={getState}
+        />
+        <DistrictModal
+        changeCity={changeCity}
+        setSelectedDistrict={setSelectedDistrict}
+        setSelectedDistName={setSelectedDistName}
+          setDMVisible={setDMVisible}
+          distDMVisible={distDMVisible}
+          district={district} />
+
+
+        <CityModal
+        setSelectedCity={setSelectedCity}
+        setSelectedCityName={setSelectedCityName}
+        city={city}
+        cityMVisible={cityMVisible} 
+        setCityMVisible={setCityVisible}
+        />
+      </SafeAreaView>
+      {lodding && <Loder lodding={lodding} />}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  drView: {
+    width: '100%', height: 60,
+    borderBottomColor: '#858081',
+    borderBottomWidth: 0.9,
+    marginVertical: 13,
+  },
+  drUpper: { width: '100%', height: '50%', },
+  drLower: {
+    width: '100%', height: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
   container: {
     flex: 1,
   },
@@ -665,8 +665,8 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     borderRadius: 25,
-    borderWidth: 2.2,
-    borderColor: '#ff3259',
+    
+    backgroundColor:'#ff3259',
     alignSelf: 'center',
     marginBottom: 50,
     alignItems: 'center',

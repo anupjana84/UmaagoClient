@@ -1,7 +1,7 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React from 'react';
 import {
-  Dimensions,
+ 
   StyleSheet,
   View,
   SafeAreaView,
@@ -13,12 +13,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 import Upcoming from '../../Components/Upcoming';
-const {width} = Dimensions.get('screen');
+
 import Running from '../../Components/Running';
 import Completed from '../../Components/Completed';
+import { useSelector } from 'react-redux';
+import { Image_url } from '../../Utils/BaseUrl';
 const Tab = createMaterialTopTabNavigator();
 
 const Campaign = ({navigation}) => {
+  const {profileImage}=useSelector(state=>state.ProfileImage)
+  
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -49,6 +53,7 @@ const Campaign = ({navigation}) => {
                   backgroundColor: 'red',
                   borderRadius: 22.5,
                 }}>
+                  {profileImage?.profileImage==null?(
                 <Image
                   source={require('../../Images/car.jpg')}
                   style={{
@@ -57,7 +62,17 @@ const Campaign = ({navigation}) => {
                     height: '100%',
                     resizeMode: 'contain',
                   }}
+                />):(
+                  <Image
+                  source={{uri:`${Image_url}/${profileImage.profileImage}`}}
+                  style={{
+                    width: '100%',
+                    borderRadius: 50,
+                    height: '100%',
+                    resizeMode: 'contain',
+                  }}
                 />
+                )}
               </View>
             </View>
           </TouchableOpacity >
@@ -65,8 +80,8 @@ const Campaign = ({navigation}) => {
             <Image
               source={require('../../Images/homeLogo1.png')}
               style={{
-                width: '80%',
-                height: '70%',
+                width: '100%',
+                height: '100%',
                 resizeMode: 'contain',
               }}
             />

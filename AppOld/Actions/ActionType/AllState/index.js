@@ -1,0 +1,1 @@
+export const ALL_STATE='ALL_STATE'

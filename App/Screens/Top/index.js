@@ -6,11 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import SplashScreen from 'react-native-splash-screen';
 import { USER_SET } from '../../Actions/ActionType/User';
+// import Axios from 'axios'
 
 const Top = ({ navigation }) => {
   const dispatch = useDispatch()
   const navigatePage = async () => {
     const isRegister = await AsyncStorage.getItem('@user');
+     const token = JSON.parse(await AsyncStorage.getItem('@token'));
+    // Axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
 
     const data = isRegister != null ? JSON.parse(isRegister) : null;
     if (data === null) {
@@ -19,10 +22,12 @@ const Top = ({ navigation }) => {
       dispatch({
         type: USER_SET,
         payload: {
-          data: data
+          data: data,
+          token:token
+          
         }
       })
-      navigation.replace('Profile')
+      navigation.replace('Dashboard')
     }
 
     // data === null
@@ -34,8 +39,7 @@ const Top = ({ navigation }) => {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide()
-       navigatePage()
-     // navigation.replace('RouteMap')
+      navigatePage()
     }, 3000);
 
   }, [])

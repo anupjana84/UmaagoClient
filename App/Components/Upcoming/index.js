@@ -1,19 +1,18 @@
 import {
   StyleSheet, Text,
-  TouchableOpacity, ScrollView, FlatList, View
+  FlatList, View,
+  Dimensions
 } from 'react-native';
 import React from 'react';
-import { Card, Title, } from 'react-native-paper';
+import { Card, Title } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-moment
+const {height} =Dimensions.get('screen')
 const Upcoming = () => {
   const CampaignHistory = useSelector((state) => state.CampaignHistory)
-  // console.log(CampaignHistory.completed,'CampaignHistory');
-  // console.log(CampaignHistory.upcomming,'completed');
+  //  console.log(CampaignHistory.upcomming[0]);
 
-  // console.log(CampaignHistory.upcomming, 'running');
-
+   
   return (
    
       <View >
@@ -22,7 +21,12 @@ const Upcoming = () => {
           renderItem={({ item, id }) => {
             // console.log(item);
             return (
-              <Card
+              <>
+             
+                {item.upcomming_detail.map((itemm,i)=>{
+                  return(
+                    <Card
+                    key={i}
                 style={{
                   padding: 20,
                   marginHorizontal:15,
@@ -30,35 +34,63 @@ const Upcoming = () => {
                   backgroundColor: 'white',
                   borderRadius: 20,
                 }}>
-                <Title>Campaign {item.campaign_type_id} </Title>
+               
                 <View style={styles.itemView}>
+                      
+                      <Title>Campaign #{item.id }</Title>
+                      <Title>Trip #{itemm?.id}</Title>
+                     
+                    </View>
+               
+                <View style={{
+                      width: "100%",
+                      paddingVertical:7,
+                    }}>
+                     <Text style={{marginTop:5, fontSize:18, fontWeight:'bold'}}>From Location </Text>
+                      <Text style={{marginTop:10,}}>{itemm?.from_location}</Text>
+                    </View>
+                <View style={{
+                      width: "100%",
+                      paddingVertical:7,
+                    }}>
+                     <Text style={{marginTop:5, fontSize:18, fontWeight:'bold'}}>To Location </Text>
+                      <Text style={{marginTop:10,}}>{itemm?.to_location}</Text>
+                    </View>
+                    <View style={styles.itemView}>
                   <Text>Campaign Type </Text>
                   <Text>{item.type.name}</Text>
                 </View>
-                <View style={styles.itemView}>
-                  <Text>Start Date </Text>
-                  <Text>{moment(item.from_date).format("DD MMM")}</Text>
-                </View>
-                <View style={styles.itemView}>
-                  <Text>End Date </Text>
-                  <Text>{moment(item.to_date).format("DD MMM")}</Text>
-                </View>
-              </Card>
+                    <View style={styles.itemView}>
+                      
+                      <Text>Campaign Date</Text>
+                      <Text>{ moment(itemm?.from_date).format('DD-MM-YY') }</Text>
+                     
+                    </View>
+                    <View style={styles.itemView}>
+                      
+                      <Text>Assign Date</Text>
+                      <Text>{ moment(itemm?.created_at).format('DD-MM-YY') }</Text>
+                     
+                    </View>
+                
+                </Card>
+                  )
+                })}
+             
+              </>
             );
           }}
 
           keyExtractor={(item, i) => i.toString()}
-
+          ListEmptyComponent={() => (
+            <View style={styles.emptyContainer}>
+              <Title>No Data found</Title>
+            </View>
+          )}
         />
 
 
-        {/* <TouchableOpacity
-          onPress={() => alert('Submit Successfull')}
-          style={styles.nextBottom}>
-          <Text style={{color: 'white', fontSize: 20, fontWeight: '600'}}>
-           Start Campaign
-          </Text>
-        </TouchableOpacity> */}
+       
       </View>
    
   );
@@ -94,6 +126,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
 
     elevation: 5,
-  }
+  },
+  emptyContainer: {
+    height: height-150,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+  },
   //next Bottom
 });

@@ -2,7 +2,8 @@
 import { USER_SET } from './../../Actions/ActionType/User/index';
 
 const initialState = {
- user:{}
+ user:{},
+ token:""
 }
 
 export default (state = initialState, action) => {
@@ -11,6 +12,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         user: action.payload.data,
+        token: action.payload.token,
         
       };
 
