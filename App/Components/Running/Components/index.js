@@ -12,6 +12,7 @@ import Geolocation from 'react-native-geolocation-service';
 
 
 const Run = () => {
+ 
   const mapRef = useRef(null)
   const [currentRegion, setCurrentRegion] = useState({
     latitude: 24.101563,

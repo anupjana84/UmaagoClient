@@ -22,6 +22,8 @@ import ServiceCreate from '../Screens/ServiceCreate';
 import CampaignCreate from '../Screens/CampaignCreate';
 import PaymentHistory from '../Screens/PaymentHistory';
 import ServiceHistory from '../Screens/ServiceHistory';
+import RouteMapDetails from '../Screens/RouteMapDetails';
+import ClientProfile from '../Screens/ClientProfile';
 
 
 import Dashboard from '../Screens/Dashboard';
@@ -47,6 +49,7 @@ const MainStack = () => {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="ServiceCreate" component={ServiceCreate} />
         <Stack.Screen name="CampaignCreate" component={CampaignCreate} />
+        <Stack.Screen name="RouteMapDetails" component={RouteMapDetails} />
         
        
        
@@ -56,6 +59,7 @@ const MainStack = () => {
         <Stack.Screen name="Dashboard" component={Dashboard} />
         <Stack.Screen name="PaymentHistory" component={PaymentHistory} />
         <Stack.Screen name="ServiceHistory" component={ServiceHistory} />
+        <Stack.Screen name="ClientProfile" component={ClientProfile} />
       
        
       </Stack.Navigator>

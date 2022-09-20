@@ -24,6 +24,7 @@ const { height, width } = Dimensions.get('screen');
 const Notification = ({ navigation }) => {
   const {token}=useSelector(state=>state.user)
   const [lodding, setLoding] = React.useState(false);
+  const [heightBig, setHeightBig] = React.useState(false);
 
   const [nitiFications, setNitiFications] = React.useState([]);
   const getNotification = () => {
@@ -40,7 +41,7 @@ const Notification = ({ navigation }) => {
     })
     .then(response=>{
       if (response) {
-            console.log(response.notification)
+            // console.log(response.notification)
           setLoding(false)
           setNitiFications(response.notification)
           
@@ -70,15 +71,21 @@ const Notification = ({ navigation }) => {
   }, [])
 const randerItem=({item})=>{
   return (
-    <View style={styles.itemView}>
-      <View
-        style={{ width: '80%', height: '100%', justifyContent: 'center' }}>
-        <Text>{item.message}</Text>
+    
+    <View style={{...styles.itemView,}}>
+       
+       <View
+        style={{  }}>
+       <Text style={{paddingVertical:10, fontWeight:"500"}}>{moment(item.updated_at).fromNow()}</Text>
       </View>
       <View
-        style={{ width: '20%', height: '100%', justifyContent: 'center', alignItems: 'flex-end' }}>
-        <Text>{moment(item.updated_at).fromNow()}</Text>
+        style={{alignItems:'center',
+        flexWrap:'wrap' }}>
+         <Text style={{paddingBottom:10}}>{item.message}</Text>
+        
+
       </View>
+     
     </View>
 
   )
@@ -116,15 +123,7 @@ const randerItem=({item})=>{
           </View>
           {/* ======top======== */}
 
-          <View style={styles.topView1}>
-            <Text style={{ color: '#ff3259', fontSize: 20, fontWeight: '900' }}>
-              Mark all as read
-            </Text>
-
-            <Text style={{ color: '#ff3259', fontSize: 20, fontWeight: '900' }}>
-              clear all
-            </Text>
-          </View>
+          
           {/* ======top======== */}
           {/* ======Item======== */}
 
@@ -170,16 +169,17 @@ const styles = StyleSheet.create({
   },
   itemView: {
     width: '94%',
-    height: 80,
+  
+    paddingVertical:5,
     backgroundColor: '#FCF4F7',
-    flexDirection: 'row',
+    
     borderRadius: 10,
     marginVertical: 8,
     alignSelf: 'center',
     borderLeftWidth: 7,
     borderLeftColor: '#ff3259',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    
+    
     paddingHorizontal: 10,
   },
   //itemView

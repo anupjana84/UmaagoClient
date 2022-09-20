@@ -321,7 +321,8 @@ if (pass.length<6) {
         dispatch({
           type:USER_SET,
           payload:{
-            data:result.user
+            data:result.user,
+            token:token
           }
         })
         alertMessage('Upadate Successfull', '#38CC77')

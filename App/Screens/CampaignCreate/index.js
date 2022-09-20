@@ -74,7 +74,7 @@ const CampaignCreate = ({ navigation }) => {
     setDatePickerVisibility(false);
   };
   const handleConfirm = date => {
-     console.log(moment(date).format('DD-MM-YYYY'));
+    //  console.log(moment(date).format('DD-MM-YYYY'));
    setFromDate(moment(date).format('DD-MM-YYYY'))
 
     hideDatePicker();
@@ -89,7 +89,7 @@ const CampaignCreate = ({ navigation }) => {
     setDatePickerVisibilityOne(false);
   };
   const handleConfirmOne = date => {
-     console.log(moment(date).format('DD-MM-YYYY'));
+    //  console.log(moment(date).format('DD-MM-YYYY'));
     setTodate(moment(date).format('DD-MM-YYYY'))
 
     hideDatePickerOne();
@@ -304,10 +304,12 @@ const CampaignCreate = ({ navigation }) => {
               <TextInput
                 style={{
                   width: '48%', height: 50,
-                  backgroundColor: 'white', fontSize: 18, paddingHorizontal: 0
+                  backgroundColor: 'white', fontSize: 18, paddingHorizontal: 0,
+                  color:'red'
                 }}
                 label="From Date"
                 value={fromDate}
+                theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
                 activeUnderlineColor="#ff3259"
                 onFocus={()=>showDatePicker()}
                right={
@@ -322,6 +324,7 @@ const CampaignCreate = ({ navigation }) => {
                   backgroundColor: 'white', fontSize: 18, paddingHorizontal: 0
                 }}
                 label="To Date"
+                theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
                 
                 value={toDate}
                 activeUnderlineColor="#ff3259"
@@ -393,6 +396,7 @@ const CampaignCreate = ({ navigation }) => {
             <TextInput
               style={styles.inputStyle}
               label="Area Name"
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               value={areaName}
               activeUnderlineColor="#ff3259"
               onChangeText={text => setAreaName(text)}
@@ -401,6 +405,7 @@ const CampaignCreate = ({ navigation }) => {
               style={styles.inputStyle}
               label="Division"
               value={division}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               activeUnderlineColor="#ff3259"
               onChangeText={text => setDivision(text)}
             />
@@ -408,6 +413,7 @@ const CampaignCreate = ({ navigation }) => {
               style={styles.inputStyle}
               label="Subdivision"
               value={subDivision}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               activeUnderlineColor="#ff3259"
               onChangeText={text => setSubDivision(text)}
             />
@@ -416,6 +422,7 @@ const CampaignCreate = ({ navigation }) => {
               style={styles.inputStyle}
               label="Type Note(Optional)"
               value={typeNote}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               activeUnderlineColor="#ff3259"
               onChangeText={text => setTypeNote(text)}
             />
@@ -464,6 +471,7 @@ const CampaignCreate = ({ navigation }) => {
                   <RadioButton
                     value="2"
                     color="#ff3259"
+                    theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
                     status={truckType === item.id ? 'checked' : 'unchecked'}
                     onPress={() => setTruckType(item.id)}
                   />

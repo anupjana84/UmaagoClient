@@ -130,7 +130,7 @@ const OtpReceive = ({navigation,route}) => {
     let otp = pin1 + pin2 + pin3 + pin4+ pin5+pin6;
     if (otp.length == 6) {
       save(otp);
-       console.log(otp);
+      //  console.log(otp);
     }
   };
   useEffect(() => {

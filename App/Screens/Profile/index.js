@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   View,
   BackHandler,
-  Alert
+  Alert,
+  ScrollView
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
@@ -29,6 +30,7 @@ import { PROFILE_IAMGE } from '../../Actions/ActionType/ProfileImage/index';
 import Loder from '../../Components/Loder';
 import { alertMessage } from '../../Components/AlertMessage';
 import { useIsFocused } from '@react-navigation/native';
+
 
 
 const Profile = ({navigation}) => {
@@ -133,7 +135,7 @@ const geImage= async()=>{
     if (response) {
         //  console.log(response,'rea')
         if (response) {
-              
+          setModalVisible(false)
           dispatch({
             type:PROFILE_IAMGE,
             payload:{
@@ -227,7 +229,7 @@ const geImage= async()=>{
 //=====
 
   useEffect(() => {
-     geImage()
+    //  geImage()
   }, [])
  
    useEffect(() => {
@@ -273,7 +275,11 @@ const geImage= async()=>{
                 Profile
               </Text>
             </View>
-            <View style={styles.topViewLeft} />
+            <View style={styles.topViewLeft} >
+            <TouchableOpacity onPress={()=>navigation.navigate('Dashboard')} >
+            <FontAwesome name="home" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
           </View>
         </View>
          {/* ==========one part====== */}
@@ -288,7 +294,7 @@ const geImage= async()=>{
             top: 120,
             alignItems: 'center',
             position: 'absolute',
-            zIndex: 10,
+            
           }}>
           <View
             style={{
@@ -304,6 +310,7 @@ const geImage= async()=>{
           </View>
           <View style={{width: '100%', paddingHorizontal: 10}}>
             {/* =========Item ========= */}
+           
             <View style={styles.itemView}>
               <View style={styles.itemViewLeft}>
                 <LinearGradient
@@ -314,7 +321,7 @@ const geImage= async()=>{
                   <SimpleLineIcons name="pencil" size={24} color="white" />
                 </LinearGradient>
               </View>
-              <View style={styles.itemViewRight}>
+              <View style={{...styles.itemViewRight,}}>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('EditProfile');
@@ -368,7 +375,7 @@ const geImage= async()=>{
               <View style={styles.itemViewRight}>
               <TouchableOpacity
                   onPress={() => {
-                    // navigation.navigate('ServiceHistory');
+                     navigation.navigate('ServiceHistory');
                   }}>
                 <Text
                   style={{fontSize: 20, fontWeight: 'bold', color: '#ff3259'}}>
@@ -426,7 +433,7 @@ const geImage= async()=>{
             </View>
             {/* =========Item ========= */}
             {/* =========Item ========= */}
-            {/* <View style={styles.itemView}>
+             <View style={styles.itemView}>
               <View style={styles.itemViewLeft}>
                 <LinearGradient
                   colors={['#FFA68D', '#FD3A84']}
@@ -447,7 +454,8 @@ const geImage= async()=>{
                 </Text>
                 </TouchableOpacity>
               </View>
-            </View> */}
+            </View> 
+            
             {/* =========Item ========= */}
             {/* =========Item ========= */}
           </View>
@@ -465,7 +473,7 @@ const geImage= async()=>{
             justifyContent: 'center',
             alignItems: 'center',
             position: 'absolute',
-            zIndex: 122,
+            
           }}>
           <View
             style={{
@@ -495,27 +503,25 @@ const geImage= async()=>{
               }}
             />)} 
           </View>
-          <TouchableOpacity onPress={()=>{
+          <TouchableOpacity onPressIn={()=>{
            setModalVisible(true)
           }}>
-            <LinearGradient
-              colors={['#FFA68D', '#FD3A84']}
-              start={{x: 0.0, y: 0.0}}
-              end={{x: 0.0, y: 1.0}}
+            <View
+              
               style={{
                 width: 50,
                 height: 50,
-                backgroundColor: 'green',
+                backgroundColor: '#ff3259',
                 left: 30,
                 top: -50,
                 justifyContent: 'center',
                 position: 'absolute',
-                zIndex: 500000,
+                
                 alignItems: 'center',
                 borderRadius: 50,
               }}>
                <SimpleLineIcons name="pencil" size={24} color="white" />
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
        
         </View>
@@ -535,6 +541,9 @@ const geImage= async()=>{
 export default Profile;
 
 const styles = StyleSheet.create({
+  container:{
+    backgroundColor:'white'
+  },
   //itemView
   itemViewRight: {
     width: '70%',
@@ -553,7 +562,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FCF4F7',
     flexDirection: 'row',
     borderRadius: 10,
-    marginVertical: 8,
+    marginBottom:5
   },
   //itemView
 

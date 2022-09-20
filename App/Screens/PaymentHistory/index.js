@@ -27,6 +27,8 @@ const PaymentHistory = ({ navigation }) => {
   const [history, setHistory] = useState([])
   const [loding, setLoding] = useState([])
   const { token } = useSelector(state => state.user)
+  const { user } = useSelector(state => state.user)
+  // console.log(user)
   const getPaymentHistory = () => {
     fetch(`${Base_url}/payment-history `,
       {
@@ -41,6 +43,7 @@ const PaymentHistory = ({ navigation }) => {
       .then(res => {
         return res.json()
       }).then(result => {
+        // console.log(result.payment_history);
 
         setHistory(result.payment_history)
       })
@@ -62,16 +65,20 @@ const PaymentHistory = ({ navigation }) => {
             justifyContent: 'center', alignItems: 'center',
             borderRadius: 25
           }}>
-            <Text style={{ color: 'white', fontSize: 30 }}>R</Text>
+            <Text style={{ color: 'white', fontSize: 20 }}>{user.first_name.charAt(0).toUpperCase()}
+            {user.last_name.charAt(0).toUpperCase()}</Text>
           </View>
         </View>
         <View style={{ width: '80%', height: '100%', flexDirection: 'row' }}>
-          <View style={{ width: '80%', height: '100%', justifyContent: 'center' }}>
-            <Text style={{fontWeight:'bold'}}>Anup Jana</Text>
+          <View style={{ width: '70%', height: '100%', justifyContent: 'center' }}>
+            <Text style={{
+              fontWeight: 'bold',
+              color: item.type == '1' ? 'green' : 'red'
+            }}>{item.type == '1' ? 'Credit' : 'Debit'}</Text>
             <Text>{moment(item.payment_date).format('DD/MM/YYYY')}</Text>
           </View>
-          <View style={{ width: '20%', height: '100%', justifyContent: 'center', alignItems: 'center', }}>
-            <Text style={{fontWeight:'bold', fontSize:18, color:item.type=='1'?'green':'red'}}>{item.amount}</Text>
+          <View style={{ width: '30%', height: '100%', justifyContent: 'center', alignItems: 'center', }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: item.type == '1' ? 'green' : 'red' }}>{item.amount}</Text>
           </View>
         </View>
       </View>
@@ -167,7 +174,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.41,
     shadowRadius: 9.11,
-    
+
     elevation: 14,
   },
   //itemView

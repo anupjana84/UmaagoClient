@@ -14,19 +14,24 @@ import {
    Platform
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 
-import { Image_url } from '../../Utils/BaseUrl';
+import { Base_url, Image_url } from '../../Utils/BaseUrl';
 import { SliderBox } from "react-native-image-slider-box";
 import { Title } from 'react-native-paper';
 import { getHomedata } from '../../Actions/HomeData';
 import YouTube, { YouTubeStandaloneIOS, YouTubeStandaloneAndroid } from 'react-native-youtube';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { useNavigation } from '@react-navigation/native';
+import { PROFILE_IAMGE } from '../../Actions/ActionType/ProfileImage/index';
 const { width } = Dimensions.get('screen');
 
-const Dashboard = ({ getHomedata }) => {
+const Dashboard = ({ getHomedata ,route}) => {
    const navigation = useNavigation()
+   // console.log(route);
+   const { profileImage } = useSelector(state => state.ProfileImage)
+   
+   const dispatch=useDispatch()
 
    const [playing, setPlaying] = useState(false);
    const onStateChange = (state) => {
@@ -42,7 +47,7 @@ const Dashboard = ({ getHomedata }) => {
    const { data } = useSelector((state) => state.HomeData)
    const { sliders } = useSelector((state) => state.HomeData)
    const { token } = useSelector((state) => state.user)
-   //  console.log(data)use
+//   console.log(data)
 
    // const sliderItem = () => {
 
@@ -50,9 +55,42 @@ const Dashboard = ({ getHomedata }) => {
    //       return { uri: `${Image_url}/${element.image}` };
    //    });
    // };
-   useEffect(() => {
 
-       getHomedata(setLoding,token)
+   const geImage= async()=>{ 
+    
+    
+    
+    
+      fetch(`${Base_url}/profileImage`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(res=>{
+        return res.json()
+      })
+      .then(response=>{
+        if (response) {       
+              dispatch({
+                type:PROFILE_IAMGE,
+                payload:{
+                  data:response
+                }
+              })
+          
+            
+        }
+       
+      })
+      .catch(err=>console.log(err))
+     
+    }
+    
+   useEffect(() => {
+      geImage()
+      getHomedata(setLoding, token)
    }, [])
 
    return (
@@ -86,19 +124,33 @@ const Dashboard = ({ getHomedata }) => {
                            backgroundColor: 'red',
                            borderRadius: 22.5,
                         }}>
-                        <Image
-                           source={require('../../Images/car1.png')}
-                           style={{
-                              width: '100%',
-                              borderRadius: 50,
-                              height: '100%',
-                              resizeMode: 'contain',
-                           }}
-                        />
+
+                        {profileImage?.profileImage == null ? (
+                           <Image
+                              source={require('../../Images/car.jpg')}
+                              style={{
+                                 width: '100%',
+                                 borderRadius: 50,
+                                 height: '100%',
+                                 resizeMode: 'contain',
+                              }}
+                           />) : (
+                           <Image
+                              source={{ uri: `${Image_url}/${profileImage.profileImage}` }}
+                              style={{
+                                 width: '100%',
+                                 borderRadius: 50,
+                                 height: '100%',
+                                 resizeMode: 'contain',
+                              }}
+                           />
+                        )}
+
                      </View>
                   </TouchableOpacity>
                </View >
-               <View style={styles.middleProfile}>
+               <View
+                  style={styles.middleProfile}>
                   <Image
                      source={require('../../Images/homeLogo1.png')}
                      style={{
@@ -115,7 +167,7 @@ const Dashboard = ({ getHomedata }) => {
             {/* ============Profile View========= */}
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                {Object.keys(data).length > 0 ? (
+               {Object.keys(data).length > 0 ? (
                   <View style={styles.slidImage}>
 
                      <SliderBox
@@ -139,22 +191,23 @@ const Dashboard = ({ getHomedata }) => {
 
                      />
                   </View>
-               ) : null} 
+               ) : null}
                {/* ============ Compaigns View ======= */}
                <View style={{ ...styles.campaignView, height: 180, }}>
                   <View style={{ ...styles.campaignHeader, paddingVertical: 10 }}>
-                     <Title>Compaigns</Title>
+                     <Title style={{ color: 'black' }}>campaigns</Title>
+
                   </View>
                   <View style={styles.campaignItemParent}>
                      {/* ======item======== */}
 
-                     <TouchableOpacity onPress={()=>{
+                     <TouchableOpacity onPress={() => {
                         navigation.navigate('Campaign')
                      }} style={styles.campaignItem}>
                         <View style={styles.campaignItemUpper}>
                            <View style={styles.campaignItemUpperIconBox}>
                               <Image source={require('../../Images/rotated.png')} style={{
-                                 width: 60, height: 60,
+                                 width: 50, height: 50,
                                  tintColor: 'red', resizeMode: 'contain'
                               }} />
 
@@ -165,11 +218,13 @@ const Dashboard = ({ getHomedata }) => {
                         </View>
                      </TouchableOpacity>
                      {/* ======item======== */}
-                     <View style={styles.campaignItem}>
+                     <TouchableOpacity onPress={() => {
+                      
+                     }} style={styles.campaignItem}>
                         <View style={styles.campaignItemUpper}>
                            <View style={styles.campaignItemUpperIconBox}>
                               <Image source={require('../../Images/Group.png')} style={{
-                                 width: 40, height: 40,
+                                 width: 35, height: 35,
                                  tintColor: 'red', resizeMode: 'contain'
                               }} />
                            </View>
@@ -177,13 +232,13 @@ const Dashboard = ({ getHomedata }) => {
                         <View style={styles.campaignItemLower}>
                            <Text style={{ fontSize: 14, fontWeight: '500' }}>Upcoming</Text>
                         </View>
-                     </View>
+                     </TouchableOpacity>
                      {/* ======item======== */}
                      <View style={styles.campaignItem}>
                         <View style={styles.campaignItemUpper}>
                            <View style={styles.campaignItemUpperIconBox}>
                               <Image source={require('../../Images/Vector.png')} style={{
-                                 width: 40, height: 40,
+                                 width: 35, height: 35,
                                  tintColor: 'red', resizeMode: 'contain'
                               }} />
 
@@ -206,12 +261,10 @@ const Dashboard = ({ getHomedata }) => {
                      {/* ============ CAR  Item ======= */}
                      {Object.keys(data).length > 0 ? (
                         data.types.map((item, i) => {
-
                            return (
                               <TouchableOpacity
                                  onPress={() => {
                                     navigation.navigate('CampaignCreate')
-
                                  }}
                                  key={i} style={styles.carViewItem}>
                                  <View style={{
@@ -227,13 +280,12 @@ const Dashboard = ({ getHomedata }) => {
                                     }} source={{ uri: `${Image_url}/${item.image}` }} />
                                  </View>
                                  <View style={{ width: '100%', height: '30%' }}>
-                                    <Title>{item.name}</Title>
-                                    <Text>Starts 300/D</Text>
+                                    <Text></Text>
+                                    <Text>{item.name}</Text>
                                  </View>
                               </TouchableOpacity>
                            )
                         })
-
                      ) : null}
                      {/* ============ CAR  Item ======= */}
                   </ScrollView>
@@ -244,15 +296,12 @@ const Dashboard = ({ getHomedata }) => {
                <View style={{
                   ...styles.carView1,
                   height: 250,
-
-
                }}>
                   <View style={{
-                     width: '100%', height: 50,
-
+                     width: '100%', height: 70,
                      justifyContent: 'center'
                   }}>
-                     <Text style={{ fontSize: 20, fontWeight: "600" }}>Service</Text>
+                     <Text style={{ fontSize: 20, fontWeight: "600" }}>services</Text>
                   </View>
                   <View style={{ height: 200, width: '100%' }}>
                      <ScrollView horizontal style={{}}
@@ -260,7 +309,6 @@ const Dashboard = ({ getHomedata }) => {
                         {/* ============ CAR  Item ======= */}
                         {Object.keys(data).length > 0 ? (
                            data.services.map((item, i) => {
-
                               return (
                                  <TouchableOpacity
                                     onPress={() => {
@@ -279,13 +327,13 @@ const Dashboard = ({ getHomedata }) => {
                                        }} source={{ uri: `${Image_url}/${item.image}` }} />
                                     </View>
                                     <View style={{ width: '100%', height: '30%' }}>
-                                       <Title>{item.name}</Title>
-                                       <Text>Starts 300/D</Text>
+                                       <Text ></Text>
+                                       <Text style={{ color: 'black' }}>{item.name}</Text>
+
                                     </View>
                                  </TouchableOpacity>
                               )
                            })
-
                         ) : null}
                         {/* ============ CAR  Item ======= */}
 
@@ -294,21 +342,16 @@ const Dashboard = ({ getHomedata }) => {
                </View>
                {/* ============ SERVICE  View ======= */}
                <View style={{
-                  width: width, height: 70,
+                  width: width, height: 100,
                   paddingLeft: 10,
                   justifyContent: 'center'
                }}>
-                  <Title>Client Feedback</Title>
+                  <Title style={{ color: 'black' }}>Client Feedback</Title>
                </View>
                <View style={{
-
                   justifyContent: 'center', alignItems: 'center',
-
                }}>
-                  
-
                </View>
-
             </ScrollView>
 
          </SafeAreaView>

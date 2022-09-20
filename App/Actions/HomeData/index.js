@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getHomedata= (setLoding)=> async(dispatch)=>{
     const token= JSON.parse( await AsyncStorage.getItem('@token'))
-    console.log(token)
+    // console.log(token)
 fetch(`${Base_url}/home`,{
     method:"GET",
     headers:{

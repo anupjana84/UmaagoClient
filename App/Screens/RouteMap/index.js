@@ -240,14 +240,14 @@ const RouteMap = ({ navigation,route }) => {
       };
       const storedValue = await AsyncStorage.getItem('@season_list1');
       const prevList = await JSON.parse(storedValue);
-      console.log(typeof prevList)
+      // console.log(typeof prevList)
       if (!prevList) {
         const newList = [seasonToAdd];
 
         await AsyncStorage.setItem('@season_list1', JSON.stringify(newList));
         getList();
       } else {
-        console.log(prevList.length);
+        // console.log(prevList.length);
         if (prevList.length >= 6) {
           alert('Max 6 Images')
         } else {
@@ -320,7 +320,7 @@ const RouteMap = ({ navigation,route }) => {
       }).then(res => {
         return res.json()
       }).then(async (result) => {
-        console.log(result);
+        // console.log(result);
         if (result?.error == true) {
           setLodding(false)
           alertMessage(result.error_messages[0], '#E07C24')

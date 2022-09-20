@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 
 
 
+
 const ServiceCreate = ({ navigation }) => {
 
   const [lodding, setLodding] = useState(false)
@@ -56,6 +57,17 @@ const ServiceCreate = ({ navigation }) => {
     // console.log(listData[id]);
     setGetServiceTypeData(listData);
   };
+  const actiText1 = () => {
+    //  console.log(id)
+    // console.log(getServiceTypeData);
+    let listData = getServiceTypeData.map(item => {
+      let itm = { ...item, isActive: false };
+      return itm;
+    });
+   
+    // console.log(listData[id]);
+    setGetServiceTypeData(listData);
+  };
   //=============Multiple Image 
   const addToList = async (item1, item2, item3) => {
     // console.log(item1, 'item1', item2, 'item2', item3);
@@ -75,7 +87,7 @@ const ServiceCreate = ({ navigation }) => {
         await AsyncStorage.setItem('@season_list', JSON.stringify(newList));
         getList();
       } else {
-        console.log(prevList.length);
+        // console.log(prevList.length);
         if (prevList.length >= 6) {
           alert('Max 6 Images')
         } else {
@@ -176,7 +188,7 @@ const ServiceCreate = ({ navigation }) => {
           //   return { ...item, isActive: false }
           // })
           // setGetServiceTypeData(data)
-           console.log(response)
+          //  console.log(response)
         }
       })
       .catch(error => {
@@ -213,19 +225,20 @@ const ServiceCreate = ({ navigation }) => {
   //=====SAVE
   const save = async () => {
 
-    console.log(serveType)
+    // console.log(serveType)
 
     const user = JSON.parse(await AsyncStorage.getItem('@user'));
-    console.log(user.access_token)
+    // console.log(user.access_token)
     let formData = new FormData();
     const storedValue = JSON.parse(await AsyncStorage.getItem('@season_list'));
+    console.log(storedValue);
     if (
       serveType == '' ||
       quantity == null
     ) {
       alertMessage('Service Type & Quantity Required', '#0D0D0D');
     } else {
-      setLodding(true);
+      // setLodding(true);
       if (storedValue && storedValue.length > 0) {
         storedValue.map((item, i) => {
           const imagdata = {
@@ -236,6 +249,7 @@ const ServiceCreate = ({ navigation }) => {
           formData.append('image[]', imagdata);
         });
       } else {
+        const tt=[]
         formData.append('image[]', null);
       }
 
@@ -243,18 +257,19 @@ const ServiceCreate = ({ navigation }) => {
       formData.append('quantity', quantity);
       formData.append('Upload_matter', matter);
 
-      console.log(formData);
+       console.log(formData._parts);
       return await fetch(`${Base_url}/store-services`, {
         method: 'POST',
         body: formData,
         headers: {
+        Accept: 'applicatopn/json',
           'content-type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         },
       }).then(res => {
         return res.json()
       }).then(async (result) => {
-        console.log(result);
+        // console.log(result,'ooo');
         if (result?.error == true) {
           setLodding(false)
           alertMessage(result.error_messages[0], '#E07C24')
@@ -265,6 +280,8 @@ const ServiceCreate = ({ navigation }) => {
           setMatter('')
           setQuantity('')
           setServiceType('')
+          actiText1()
+
           alertMessage('Save Successfully', '#4DD637')
         }
         // }
@@ -310,7 +327,7 @@ const ServiceCreate = ({ navigation }) => {
             }}>
 
             {/* ==========serVice Type======== */}
-            <Title style={{ marginVertical: 10 }}>Service Type</Title>
+            <Title style={{ marginVertical: 10 ,color:'black' }}>Service Type</Title>
             <View style={{
               width: "100%",
               flexDirection: 'row',
@@ -345,15 +362,19 @@ const ServiceCreate = ({ navigation }) => {
             <TextInput
               activeUnderlineColor="#ff3259"
               style={[styles.inputStyle]}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               label="Quantity"
               value={quantity}
               keyboardType="numeric"
               onChangeText={text => setQuantity(text)}
             />
             <TextInput
+            multiline
               style={styles.inputStyle}
               label="Upload Matter"
+
               value={matter}
+              theme={{ colors: { text: "black", accent: "black", primary: "black", placeholder: "black", background: "transparent" } }} underlineColor="#d1d1d3" underlineColorAndroid="#f5f5f5"
               activeUnderlineColor="#ff3259"
               onChangeText={text => setMatter(text)}
             />

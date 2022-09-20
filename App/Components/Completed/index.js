@@ -4,28 +4,72 @@ import {
   FlatList, View,
   TouchableOpacity,
   Image,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Title, } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Image_url } from '../../Utils/BaseUrl';
+import { Image_url,Base_url } from '../../Utils/BaseUrl';
 const {width}= Dimensions.get('screen')
+moment.suppressDeprecationWarnings = true;
+const Completed = ({navigation,route}) => {
+  const {token}=useSelector(state=>state.user)
+  const [loding, setLoding] = useState(false)
 
-const Completed = () => {
-  const { completed } = useSelector((state) => state.CampaignHistory)
+  // console.log(route,'cop')
+  // const { completed } = useSelector((state) => state.CampaignHistory)
   // console.log(JSON.stringify( completed.details),'gg')
   // console.log(completed, 'gg')
   const [cardHeight, sertCardHeight] = useState(true)
+  const [completed, sertcompleted] = useState([])
+
+// console.log(running, 'run')
+const getData= async()=>{
+  setLoding(true)
+  fetch(`${Base_url}/completed-campaigns`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(res=>{
+        return res.json()
+      })
+      .then(response=>{
+        if (response) {
+          // seRunning(response)
+          sertcompleted(response.data)
+            setLoding(false)
+            // dispatch({
+            //     type:ALL_CAMPAIGN_HISTORY,
+            //    payload:{
+            //        data:response,
+                  
+            //     }
+            // })
+            
+        }
+       
+      })
+      .catch(err=>console.log(err))
+  
+}
+useEffect(() => {
+  getData()
+}, [])
 
 
   const randerItem = ({ item, index }) => {
     //  console.log(cardHeight)
     //  console.log(index);
+    let map=[]
     return (
+      
       <Card
 
         style={{
@@ -37,13 +81,8 @@ const Completed = () => {
           
           // height: cardHeight === index ? '' : null
         }}>
-        <TouchableOpacity
-          onPress={() => {
-            //  sertCardHeight(item.created_at.toString())
-          }} style={{ width: "100%", height: 30, alignItems: 'flex-end' }}>
-          <MaterialIcons name={cardHeight == index ? "keyboard-arrow-down" : "keyboard-arrow-up"} size={24} color="black" />
-        </TouchableOpacity>
-        <Title>Campaign #{item.id} </Title>
+        
+        <Title style={{color:'black'}}>Campaign #{item.id} </Title>
         <View style={styles.itemView}>
           <Text>Campaign Type </Text>
           <Text>{item.type.name}</Text>
@@ -61,7 +100,29 @@ const Completed = () => {
           <Text>Trip Count </Text>
           <Text>{item.details.length}</Text>
         </View>
-        <View style={{ width: '100%', paddingVertical: 5, flexDirection: "row", flexWrap: 'wrap' }}>
+        
+        {item.details && item.details.length>0?(
+item.details.map((ite, i)=>{
+  return(
+    <TouchableOpacity
+    key={i}
+        onPress={()=>{
+          navigation.navigate('RouteMapDetails',{map:ite?.routemaps,photo:ite?.photos})
+        }}
+        style={{width:'90%', height:40, backgroundColor:'#ff3259',
+        marginTop:20,
+        alignSelf:'center',
+        borderRadius:25,
+        justifyContent:'center', alignItems:'center'}}>
+          <Text style={{color:'white', fontWeight:'900'}}>Trips View </Text>
+          
+        </TouchableOpacity>
+    
+  )
+})
+
+         ):null}
+        {/* <View style={{ width: '100%', paddingVertical: 5, flexDirection: "row", flexWrap: 'wrap' }}>
           {cardHeight  ? (
             <>
               {item.details && item.details.map((itemm, i) => {
@@ -69,7 +130,7 @@ const Completed = () => {
                   <View View  key={i}>
                    <View  style={{...styles.itemView1, }} >
                       <Text>Trip ID #{itemm.id} </Text>
-                      <Text>{moment(itemm.from_date).format('DD-MM-YYYY')}</Text>
+                      <Text>{moment(itemm?.from_date).format('DD-MM-YYYY')}</Text>
                      
 
                     </View>
@@ -132,13 +193,17 @@ const Completed = () => {
                 </View>)
               })}
             </>) : null}
-        </View>
+        </View> */}
       </Card>
     );
   }
   return (
 
     <View >
+      {loding ? (
+        <View style={{ width: '100%', height: 300, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size={80} color={'#ff3259'} />
+        </View>):(
       <FlatList
         data={completed}
         renderItem={(item, i) => randerItem(item)
@@ -148,11 +213,11 @@ const Completed = () => {
         keyExtractor={(item, i) => i.toString()}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
-            <Title>No Data found</Title>
+            <Title style={{color:'black'}}>No Data found</Title>
           </View>
         )}
-      />
-
+      /> 
+      )}
 
       {/* <TouchableOpacity
           onPress={() => alert('Submit Successfull')}

@@ -26,7 +26,7 @@ const Home = ({navigation}) => {
        
        
         <TouchableOpacity
-         onPress={()=>{navigation.navigate('Register')}} style={{...styles.regiterBottom, marginTop:20}}>
+         onPress={()=>{navigation.navigate('ClientProfile')}} style={{...styles.regiterBottom, marginTop:20}}>
           <Text style={{color: 'white', fontSize: 16, fontWeight: '700'}}>
          Register
           </Text>

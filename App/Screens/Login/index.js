@@ -55,7 +55,7 @@ const Login = ({ navigation }) => {
         // console.log(res,'red');
         return res.json()
       }).then(async (result) => {
-        console.log(result, 'dfdsf');
+        // console.log(result, 'dfdsf');
         if (result?.message) {
           setLodding(false)
           alertMessage('Credentials Wrong', '#A77B06')

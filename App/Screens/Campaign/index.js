@@ -23,6 +23,7 @@ const Tab = createMaterialTopTabNavigator();
 const Campaign = ({navigation}) => {
   const {profileImage}=useSelector(state=>state.ProfileImage)
   
+  
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -76,7 +77,9 @@ const Campaign = ({navigation}) => {
               </View>
             </View>
           </TouchableOpacity >
-          <TouchableOpacity   style={styles.middleProfile}>
+          <TouchableOpacity 
+           onPress={()=> navigation.navigate('Dashboard')} 
+            style={styles.middleProfile}>
             <Image
               source={require('../../Images/homeLogo1.png')}
               style={{
